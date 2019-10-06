@@ -12,19 +12,15 @@ public class ActiveItemBox : MonoBehaviour
     public void OnChange() {
         switch (dd.value) {
             case 0:
-                print(dd.itemText.text);
                 Editor.templateToCopy = Resources.Load<GameObject>("Box");
                 break;
             case 1:
-                print(dd.itemText.text);
                 Editor.templateToCopy = Resources.Load<GameObject>("BrickWall");
                 break;
             case 2:
-                print(dd.itemText.text);
                 Editor.templateToCopy = Resources.Load<GameObject>("Player");
                 break;
             case 3:
-                print(dd.itemText.text);
                 Editor.templateToCopy = Resources.Load<GameObject>("Lamp");
                 break;
         }

@@ -71,7 +71,6 @@ public class Editor : MonoBehaviour
     }
 
     public void SpawnObject() {
-        print("SpawnObject");
         ICommand cmd = new SpawnObjectCommand();
         cmd.execute(templateToCopy, objectGhost.transform.position, objectGhost.transform.rotation);
         m_undoStack.Push(cmd);

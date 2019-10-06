@@ -17,7 +17,7 @@ class SpawnObjectCommand : ICommand {
         }
 
         if (args[0].GetType() == typeof(GameObject) && args[1].GetType() == typeof(Vector3) && args[2].GetType() == typeof(Quaternion)) {
-        Debug.Log("YEET");
+        
             GameObject toPlace = GameObject.Instantiate((GameObject)args[0]);
             toPlace.layer = LayerMask.NameToLayer("Placable");
             toPlace.transform.position = (Vector3)args[1];//Editor.instance.objectGhost.transform.position;
