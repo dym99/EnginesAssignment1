@@ -7,6 +7,9 @@ public class Placable : MonoBehaviour
     [SerializeField]
     public Vector3 offset;
 
+    [SerializeField]
+    public int objectID;
+
     private Vector3 position;
     private Quaternion rotation;
 
