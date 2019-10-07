@@ -17,11 +17,10 @@ void exportObjects(const char* fileName, std::vector<objectInfo> ob)
 		//The file couldn't be opened
 		return;
 	}
-
 	for (int i = 0; i < ob.size(); ++i)
 	{
 		objectInfo info = ob[i];
-		fprintf(file, "%i %f %f %f %f %f %f %f", info.id, info.pos.x, info.pos.y, info.pos.z, info.rot.x, info.rot.y, info.rot.z, info.rot.w);
+		fprintf(file, "%i %f %f %f %f %f %f %f\n", info.id, info.pos.x, info.pos.y, info.pos.z, info.rot.x, info.rot.y, info.rot.z, info.rot.w);
 	}
 
 	fclose(file);
@@ -67,7 +66,7 @@ extern "C" {
 	SAVELOAD_API void saveToFile(const char* filename, int obCount, objectInfo obs[]) {
 		std::vector<objectInfo> obVector = std::vector<objectInfo>(obCount);
 		for (int i = 0; i < obCount; ++i) {
-			obVector.push_back(obs[i]);
+			obVector[i]=obs[i];
 		}
 		exportObjects(filename, obVector);
 	}

@@ -39,6 +39,11 @@ public class Editor : MonoBehaviour
         m_redoStack.Clear();
     }
 
+    public void Save()
+    {
+        SaveLoadWrapper.saveObjects("save.txt", SaveLoadWrapper.goToObjectInfo(objects));
+    }
+
     public void StartPlayMode() {
         playMode = true;
         foreach (GameObject go in objects) {
@@ -123,7 +128,7 @@ public class Editor : MonoBehaviour
                 objectGhost.SendMessage("GhostMe", SendMessageOptions.DontRequireReceiver);
                 MeshRenderer[] mrs = objectGhost.GetComponentsInChildren<MeshRenderer>();
                 Material mat = ghostMatRed;
-                if (Input.mousePosition.y < Screen.height - 120) {
+                if (Input.mousePosition.y < Screen.height - 60) {
                     mat = ghostMatGreen;
                 }
 
@@ -136,58 +141,75 @@ public class Editor : MonoBehaviour
 
                 Vector3 offset = objectGhost.GetComponent<Placable>().offset;
 
-                Physics.Raycast(ray, out hit);
+                if (Physics.Raycast(ray, out hit))
+                {
 
-                //If you actually hit something...
-                if (hit.collider.gameObject.layer == LayerMask.NameToLayer("World") || hit.collider.gameObject.layer == LayerMask.NameToLayer("Placable")) {
+                    //If you actually hit something...
+                    if (hit.collider.gameObject.layer == LayerMask.NameToLayer("World") || hit.collider.gameObject.layer == LayerMask.NameToLayer("Placable"))
+                    {
 
-                    objectGhost.transform.position = hit.point + offset;
+                        objectGhost.transform.position = hit.point + offset;
 
-                    Rigidbody[] rbs = objectGhost.GetComponentsInChildren<Rigidbody>();
-                    foreach (Rigidbody rb in rbs) {
-                        if (rb != null) {
-                            Destroy(rb);
+                        Rigidbody[] rbs = objectGhost.GetComponentsInChildren<Rigidbody>();
+                        foreach (Rigidbody rb in rbs)
+                        {
+                            if (rb != null)
+                            {
+                                Destroy(rb);
+                            }
+                        }
+                        Collider[] colliders = objectGhost.GetComponentsInChildren<Collider>();
+                        foreach (Collider c in colliders)
+                        {
+                            c.isTrigger = true;
+                            c.gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
+                        }
+
+                        //On left click
+                        if (Input.GetMouseButtonDown(0))
+                        {
+                            //Dead zone over UI
+                            if (Input.mousePosition.y < Screen.height - 60)
+                            {
+                                //Place
+                                SpawnObject();
+                                //GameObject toPlace = Instantiate(templateToCopy);
+                                //toPlace.layer = LayerMask.NameToLayer("Placable");
+                                //toPlace.transform.position = objectGhost.transform.position;
+                                //toPlace.transform.rotation = objectGhost.transform.rotation;
+                                //toPlace.transform.localScale = objectGhost.transform.localScale;
+                                //
+                                //Collider[] pcolliders = toPlace.GetComponentsInChildren<Collider>();
+                                //foreach (Collider c in pcolliders) {
+                                //    c.gameObject.layer = LayerMask.NameToLayer("Placable");
+                                //}
+                                //
+                                //objects.Add(toPlace);
+                            }
+                        }
+                        //Remove with right click
+                        if (Input.GetMouseButton(1))
+                        {
+                            Placable p;
+                            if (hit.collider.gameObject.TryGetComponent<Placable>(out p))
+                            {
+                                objects.Remove(p.gameObject);
+                                Destroy(p.gameObject);
+                            }
+                        }
+
+                    }
+                    else
+                    {
+                        foreach (MeshRenderer mr in mrs)
+                        {
+                            mr.material = ghostMatRed;
                         }
                     }
-                    Collider[] colliders = objectGhost.GetComponentsInChildren<Collider>();
-                    foreach (Collider c in colliders) {
-                        c.isTrigger = true;
-                        c.gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
-                    }
-
-                    //On left click
-                    if (Input.GetMouseButtonDown(0)) {
-                        //Dead zone over UI
-                        if (Input.mousePosition.y < Screen.height - 120) {
-                            //Place
-                            SpawnObject();
-                            //GameObject toPlace = Instantiate(templateToCopy);
-                            //toPlace.layer = LayerMask.NameToLayer("Placable");
-                            //toPlace.transform.position = objectGhost.transform.position;
-                            //toPlace.transform.rotation = objectGhost.transform.rotation;
-                            //toPlace.transform.localScale = objectGhost.transform.localScale;
-                            //
-                            //Collider[] pcolliders = toPlace.GetComponentsInChildren<Collider>();
-                            //foreach (Collider c in pcolliders) {
-                            //    c.gameObject.layer = LayerMask.NameToLayer("Placable");
-                            //}
-                            //
-                            //objects.Add(toPlace);
-                        }
-                    }
-                    //Remove with right click
-                    if (Input.GetMouseButton(1)) {
-                        Placable p;
-                        if (hit.collider.gameObject.TryGetComponent<Placable>(out p)) {
-                            objects.Remove(p.gameObject);
-                            Destroy(p.gameObject);
-                        }
-                    }
-
-                } else {
-                    foreach(MeshRenderer mr in mrs) {
-                        mr.material = ghostMatRed;
-                    }
+                } else
+                {
+                    Destroy(objectGhost);
+                    objectGhost = null;
                 }
             }
         }

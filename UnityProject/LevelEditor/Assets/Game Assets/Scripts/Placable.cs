@@ -2,13 +2,22 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum ObjectID
+{
+    BOX,
+    BRICKS,
+    PLAYER,
+    LAMP
+}
+
+
 public class Placable : MonoBehaviour
 {
     [SerializeField]
     public Vector3 offset;
 
     [SerializeField]
-    public int objectID;
+    public ObjectID objectID;
 
     private Vector3 position;
     private Quaternion rotation;

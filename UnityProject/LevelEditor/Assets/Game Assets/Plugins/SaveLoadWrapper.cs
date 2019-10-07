@@ -49,10 +49,10 @@ public class SaveLoadWrapper
         foreach (GameObject go in gos)
         {
             Placable p;
-            if (go.TryGetComponent<Placable>(out p))
+            if (go.TryGetComponent(out p))
             {
-                objectInfo info = new objectInfo();
-                info.id = p.objectID;
+                objectInfo info;
+                info.id = (int)p.objectID;
                 info.pos.x = go.transform.position.x;
                 info.pos.y = go.transform.position.y;
                 info.pos.z = go.transform.position.z;
@@ -60,6 +60,7 @@ public class SaveLoadWrapper
                 info.rot.y = go.transform.rotation.y;
                 info.rot.z = go.transform.rotation.z;
                 info.rot.w = go.transform.rotation.w;
+                if (go)
                 infolist.Add(info);
             }
         }

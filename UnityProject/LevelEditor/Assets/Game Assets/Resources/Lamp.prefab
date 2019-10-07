@@ -95,6 +95,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   offset: {x: 0, y: 0, z: 0}
+  objectID: 3
 --- !u!65 &2004421666842183785
 BoxCollider:
   m_ObjectHideFlags: 0
