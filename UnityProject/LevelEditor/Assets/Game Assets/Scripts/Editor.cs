@@ -44,6 +44,14 @@ public class Editor : MonoBehaviour
         SaveLoadWrapper.saveObjects("save.txt", SaveLoadWrapper.goToObjectInfo(objects));
     }
 
+    public void Load()
+    {
+        List<objectInfo> obs = new List<objectInfo>();
+        SaveLoadWrapper.loadObjects("save.txt", ref obs);
+        ClearAll();
+        objects = SaveLoadWrapper.objectInfoToGO(obs);
+    }
+
     public void StartPlayMode() {
         playMode = true;
         foreach (GameObject go in objects) {
@@ -173,18 +181,6 @@ public class Editor : MonoBehaviour
                             {
                                 //Place
                                 SpawnObject();
-                                //GameObject toPlace = Instantiate(templateToCopy);
-                                //toPlace.layer = LayerMask.NameToLayer("Placable");
-                                //toPlace.transform.position = objectGhost.transform.position;
-                                //toPlace.transform.rotation = objectGhost.transform.rotation;
-                                //toPlace.transform.localScale = objectGhost.transform.localScale;
-                                //
-                                //Collider[] pcolliders = toPlace.GetComponentsInChildren<Collider>();
-                                //foreach (Collider c in pcolliders) {
-                                //    c.gameObject.layer = LayerMask.NameToLayer("Placable");
-                                //}
-                                //
-                                //objects.Add(toPlace);
                             }
                         }
                         //Remove with right click

@@ -27,7 +27,7 @@ public class SaveLoadWrapper
     private static extern void saveToFile(string filename, int obCount, objectInfo[] obs);
 
     [DllImport("SaveLoadObjectsPlugin")]
-    private static extern objectInfo[] loadFromFile(string filename, ref int obCount);
+    private static unsafe extern objectInfo* loadFromFile(string filename, ref int obCount);
 
     public static void saveObjects(string filename, List<objectInfo> obs)
     {
@@ -38,9 +38,17 @@ public class SaveLoadWrapper
     {
         obs.Clear();
         int count=0;
-        objectInfo[] infoArr = loadFromFile(filename, ref count);
-        for (int i = 0; i < count; ++i)
-            obs.Add(infoArr[i]);
+        //List<objectInfo> infoArr = new List<objectInfo>();
+        unsafe
+        {
+            objectInfo* infoP = loadFromFile(filename, ref count);
+            for (int i = 0; i < count; ++i)
+            {
+                obs.Add(infoP[i]);
+            }
+        }
+        //for (int i = 0; i < count; ++i)
+        //    obs.Add(infoArr[i]);
     }
 
     public static List<objectInfo> goToObjectInfo(List<GameObject> gos)
@@ -65,5 +73,35 @@ public class SaveLoadWrapper
             }
         }
         return infolist;
+    }
+
+    public static List<GameObject> objectInfoToGO(List<objectInfo> obs)
+    {
+        List<GameObject> gos = new List<GameObject>();
+        foreach (objectInfo ob in obs)
+        {
+            GameObject theObject = null;
+            switch (ob.id)
+            {
+                case (int)ObjectID.BOX:
+                    theObject = GameObject.Instantiate(Resources.Load<GameObject>("Box"));
+                    break;
+                case (int)ObjectID.BRICKS:
+                    theObject = GameObject.Instantiate(Resources.Load<GameObject>("BrickWall"));
+                    break;
+                case (int)ObjectID.PLAYER:
+                    theObject = GameObject.Instantiate(Resources.Load<GameObject>("Player"));
+                    break;
+                case (int)ObjectID.LAMP:
+                    theObject = GameObject.Instantiate(Resources.Load<GameObject>("Lamp"));
+                    break;
+            }
+            if (theObject != null) {
+                theObject.transform.position = new Vector3(ob.pos.x, ob.pos.y, ob.pos.z);
+                theObject.transform.rotation = new Quaternion(ob.rot.x, ob.rot.y, ob.rot.z, ob.rot.w);
+                gos.Add(theObject);
+            }
+        }
+        return gos;
     }
 }
